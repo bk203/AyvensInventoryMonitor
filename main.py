@@ -1,16 +1,35 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from car_monitor import CarInventoryMonitor
+import os
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def main():
+    # Configuration
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+    monitor = CarInventoryMonitor(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
+
+    # Fetch current inventory
+    current_data = monitor.fetch_current_inventory()
+    if current_data:
+        print(f"Successfully fetched data with {len(current_data.get('groups', []))} groups")
+
+        # Save current inventory with timestamp
+        current_file = monitor.save_inventory(current_data)
+        if current_file:
+            print(f"Data saved to {current_file}")
+
+            # Load most recent previous inventory for comparison
+            previous_data = monitor.load_previous_inventory(current_file)
+            if previous_data:
+                changes = monitor.compare_inventories(previous_data, current_data)
+
+                # Send notifications via Telegram
+                monitor.notify_changes(changes)
+
+                # Print changes to console as well
+                print(monitor.telegram.format_changes_message(changes))
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()
