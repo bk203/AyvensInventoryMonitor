@@ -2,3 +2,8 @@
 .DS_Store
 data/
 .env.local
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

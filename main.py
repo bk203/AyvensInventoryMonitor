@@ -1,16 +1,11 @@
 from car_monitor import CarInventoryMonitor
 import os
-from os.path import join, dirname
-from dotenv import load_dotenv
 
 
 def main():
     # Configuration
-    dotenv_path = join(dirname(__file__), '.env')
-    load_dotenv(dotenv_path)
-
-    TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-    TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
     monitor = CarInventoryMonitor(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
 
